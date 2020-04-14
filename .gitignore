@@ -1,5 +1,5 @@
 .DS_Store
-
+*__pycache__*
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep
