@@ -1,2 +1,6 @@
 .DS_Store
-data/*
+
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep

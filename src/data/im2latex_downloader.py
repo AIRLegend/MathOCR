@@ -1,5 +1,6 @@
 import requests
 import argparse
+import os
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -24,7 +25,7 @@ def main():
 
     parser.add_argument('--save_loc',
                         type=str,
-                        default="../../data/.",
+                        default="../../data/raw/",
                         help="Path where the files will be saved.")
 
     parser.add_argument('--parallel_downloads',
@@ -43,6 +44,9 @@ def main():
     lines = []
     with open(args.urls_file, 'r') as file:
         lines = file.read().splitlines()
+
+    if not os.path.exists(args.save_loc):
+        raise ValueError("The save directory does not exist")
 
     print("Downloading files. This might take a while...")
     with ThreadPoolExecutor(max_workers=args.parallel_downloads) as executor:
