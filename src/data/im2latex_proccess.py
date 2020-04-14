@@ -73,7 +73,9 @@ def build_vocab(formulas, savepath=None):
     occurrences = {k: v for k, v in occurrences.items() if v >= treshold_vocabulary}
     del(occurrences[' '])  # We already use a special token for the space
     # We want the base vocab to be first in the list and then the 'occurrences'
-    final_vocab = base_vocab + list(occurrences.keys())
+    char_list = list(occurrences.keys())
+    char_list = [t for t in char_list if t not in set(base_vocab)]
+    final_vocab = base_vocab + char_list
     
     if savepath:
         with open(savepath, 'w') as file:
