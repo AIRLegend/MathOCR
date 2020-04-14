@@ -1,0 +1,5 @@
+https://zenodo.org/record/56198/files/formula_images.tar.gz?download=1
+https://zenodo.org/record/56198/files/im2latex_formulas.lst?download=1
+https://zenodo.org/record/56198/files/im2latex_test.lst?download=1
+https://zenodo.org/record/56198/files/im2latex_train.lst?download=1
+https://zenodo.org/record/56198/files/im2latex_validate.lst?download=1
