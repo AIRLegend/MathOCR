@@ -40,7 +40,7 @@ class LatexTokenizer:
         "|\\\\label{\w+}|\\\\hspace\{.{2,7}\}|\\\\vspace\{.{2,7}\}|"+\
         "\\\\q+uad|\\\\label\{.{0,90}\}||\\\\label\ \S*)"
     
-        self._REGEX_TOKEN = "(\\\\[a-zA-Z]+|[\s\^\{\}\(\)\_\!=0-9a-zA-Z\-\;\,\.\&\+\*\/\\\[\]<>])"
+        self._REGEX_TOKEN = "(\\\\[a-zA-Z]+|[\s\^\{\}\(\)\_\!\|=0-9a-zA-Z\-\;\,\.\&\+\*\/\\\[\]<>])"
         
         # There are some malformed letters like "\F". This will remove the "\"
         self._REGEX_LETTERS = "(\\\\\\\\(?=[A-Z])|\\\\(?=[A-Z]))(?![A-Za-z]{3,})"  
