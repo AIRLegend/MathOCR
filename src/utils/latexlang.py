@@ -32,6 +32,14 @@ class Vocabulary:
     def __len__(self):
         return len(self.token_idx)
 
+    @staticmethod
+    def load_from(filepath):
+        with open(filepath, newline='\n') as vocabfile:
+            vocabulary_list = vocabfile.readlines()
+        vocabulary_list = [v.replace("\n", "") for v in vocabulary_list]
+        vocabulary = Vocabulary(vocabulary_list)
+        return vocabulary
+
 
 class LatexTokenizer:
     
