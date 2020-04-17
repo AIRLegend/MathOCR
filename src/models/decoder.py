@@ -1,7 +1,5 @@
 import tensorflow as tf
 
-from attention import SoftAttention
-
 class Decoder(tf.keras.Model):
   def __init__(self, embedding_dim, units, vocab_size):
     super(Decoder, self).__init__()
@@ -10,7 +8,8 @@ class Decoder(tf.keras.Model):
     self.embedding_dim=embedding_dim
 
     self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
-    self.attention = SoftAttention2(self.units)
+
+    self.attention = tf.keras.layers.Attention()
     self.lstm = tf.keras.layers.LSTM(self.units,
                                    return_sequences=False,
                                    return_state=True,
@@ -26,7 +25,7 @@ class Decoder(tf.keras.Model):
     ht, memory, cont = self.lstm(concated, initial_state=hidden)  #[Batch, self.units]
     memory = [memory, cont]
 
-    ct = self.attention(tf.expand_dims(ht, axis=1), features)
+    ct = tf.squeeze(self.attention([tf.expand_dims(ht, axis=1), features]), axis=1)
     
     ot = self.fc_ot (
         tf.concat([ht, ct], axis=-1)
