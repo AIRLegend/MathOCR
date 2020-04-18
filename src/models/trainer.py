@@ -162,7 +162,7 @@ class Im2SeqTrainer():
                 # saving (checkpoint) the model every 2 epochs
                 if (epoch + 1) % 2 == 0:
                     print('Saving checkpoint')
-                    ckpt_manager.save()    
+                    self.ckpt_manager.save()    
                 
 
                 print('Epoch {} Loss {:.4f} - Acc {:.4f}'.format(epoch + 1, 
