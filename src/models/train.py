@@ -4,15 +4,11 @@ import argparse
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from models.encoder import Encoder                                                                                                                
-                                                                                                                                                       
-from models.decoder import Decoder                                                                                                                                                                                                                                                                             
-                                                                                                                    
-from models.trainer import Im2SeqTrainer                                                                                                         
-                                                                                       
-from utils.latexlang import Vocabulary                                                                                                   
-                                                                                                                                                 
-from data.dataset import build_im2latex                                                                                                 
+from models.encoder import Encoder
+from models.decoder import Decoder
+from models.trainer import Im2SeqTrainer
+from utils.latexlang import Vocabulary
+from data.dataset import build_im2latex
 
 
 def main():
@@ -33,6 +29,11 @@ def main():
                         type=int,
                         default=10,
                         help="Number of epochs to train the model")
+
+    parser.add_argument('--bs',
+                        type=int,
+                        default=16,
+                        help="Batch size")
 
     parser.add_argument('--restore',
                         help="""Restores last checkpoint saved if it exists.""",
@@ -61,30 +62,31 @@ def main():
     logdir = savedir + 'logs/'
     weights_path = savedir
 
+    vocab = Vocabulary.load_from(vocabulary_path)
 
-    vocab = Vocabulary.load_from(vocabulary_path)    
-
-    dtrain, dtest, dvalid = build_im2latex(formulas_path, 
-            images_path, 
-            csvs_path, 
-            vocab) 
+    dtrain, dtest, dvalid = build_im2latex(formulas_path,
+                                           images_path,
+                                           csvs_path,
+                                           vocab,
+                                           batch_size=args.bs)
 
     encoder = Encoder()
 
     decoder = Decoder(40, 256, len(vocab))
 
-    trainer = Im2SeqTrainer(encoder, 
-            decoder,
-            vocab['PAD'],
-            logdir=logdir,
-            savedir=checkpoint_savedir,
-            restore_checkpoint=restore_checkpoint,
-            optimizer=None)
+    trainer = Im2SeqTrainer(encoder,
+                            decoder,
+                            vocab['PAD'],
+                            logdir=logdir,
+                            savedir=checkpoint_savedir,
+                            restore_checkpoint=restore_checkpoint,
+                            optimizer=None)
 
     trainer.train(dtrain, dvalid, epochs=args.epochs)
 
     encoder.save_weights(weights_path + 'encoder.h5')
     decoder.save_weights(weights_path + 'decoder.h5')
+
 
 if __name__ == "__main__":
     main()
