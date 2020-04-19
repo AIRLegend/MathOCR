@@ -90,7 +90,7 @@ class Im2SeqTrainer():
                 #batch_loss = (loss / int(targ.shape[0]))
                 batch_loss = (loss / seq_len)
                 
-            batch_acc = acc_metric(batch_target, tf.transpose(batch_predictions),
+            batch_acc = acc_metric(batch_target[:, 1:], tf.transpose(batch_predictions),
                     self.pad_id)
 
             variables = self.encoder.trainable_variables + self.decoder.trainable_variables
@@ -128,7 +128,7 @@ class Im2SeqTrainer():
                 loss += self.loss_function(batch_target[:, t+1], predictions)
 
             batch_loss = (loss / seq_len)
-            batch_acc = acc_metric(batch_target, tf.transpose(batch_predictions),
+            batch_acc = acc_metric(batch_target[:, 1:], tf.transpose(batch_predictions),
                     self.pad_id)
 
             return batch_loss, batch_acc

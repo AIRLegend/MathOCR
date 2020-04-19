@@ -47,3 +47,7 @@ def process(image_decoded,
     image_decoded = (image_decoded / 255) - .5
 
     return image_decoded
+
+
+def load_png(filepath):
+    return tf.image.decode_png(tf.io.read_file(filepath), channels=1)
