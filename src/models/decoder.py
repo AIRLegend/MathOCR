@@ -13,16 +13,19 @@ class Decoder(tf.keras.Model):
     self.lstm = tf.keras.layers.LSTM(self.units,
                                    return_sequences=False,
                                    return_state=True,
-                                   recurrent_initializer='glorot_uniform')
+                                   recurrent_initializer='glorot_uniform',
+                                   dropout=.1)
     
     self.fc_ot = tf.keras.layers.Dense(self.units, activation='tanh', use_bias=False)
+    self.drop = tf.keras.layers.Dropout(.2)
     self.fc2 = tf.keras.layers.Dense(vocab_size, activation='softmax', use_bias=True)
 
-  def call(self, x, features, hidden, o_t_last):
+  def call(self, x, features, hidden, o_t_last, training=False):
     
     x = self.embedding(x)
     concated = tf.concat([tf.expand_dims(o_t_last, axis=1), x], axis=-1)
-    ht, memory, cont = self.lstm(concated, initial_state=hidden)  #[Batch, self.units]
+    ht, memory, cont = self.lstm(concated, 
+                    initial_state=hidden, training=training)  #[Batch, self.units]
     memory = [memory, cont]
 
     ct = tf.squeeze(self.attention([tf.expand_dims(ht, axis=1), features]), axis=1)
@@ -30,6 +33,8 @@ class Decoder(tf.keras.Model):
     ot = self.fc_ot (
         tf.concat([ht, ct], axis=-1)
     )
+
+    ot = self.drop(ot, training=training)
 
     x = self.fc2(ot)
 

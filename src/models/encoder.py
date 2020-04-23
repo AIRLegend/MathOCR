@@ -20,10 +20,12 @@ class Encoder(tf.keras.Model):
         
         self.conv5 = tf.keras.layers.Conv2D(256, 3, strides=1, padding='same', activation=tf.nn.leaky_relu)
 
+        self.drop = tf.keras.layers.Dropout(.1)
+
         self.encoded_res = tf.keras.layers.Reshape((4*18, 256))
 
      
-    def call(self, x):
+    def call(self, x, training=False):
         x = self.conv1(x)
         x = self.pool1(x)
         x = self.conv2(x)
@@ -34,6 +36,7 @@ class Encoder(tf.keras.Model):
         x = self.conv4(x)
         x = self.pool4(x)
         x = self.conv5(x)
+        x = self.drop(x, training=training)
         x = self.encoded_res(x)
 
         return x

@@ -5,6 +5,7 @@ import datetime
 
 from .encoder import Encoder
 from .decoder import Decoder
+from .optimizing import WarmupScheduler
 
 from utils.metrics import acc_metric
 
@@ -29,7 +30,8 @@ class Im2SeqTrainer():
             self.test_summary_writer = tf.summary.create_file_writer(self.test_log_dir)
 
             if optimizer is None:
-                self.optimizer = tf.keras.optimizers.Adam(lr=3e-4)
+                lr_schedule = WarmupScheduler(3e-4, 6000)
+                self.optimizer = tf.keras.optimizers.Adam(lr_schedule)
             else:
                 self.optimizer = optimizer
 
@@ -73,14 +75,15 @@ class Im2SeqTrainer():
             batch_predictions = []
             
             with tf.GradientTape() as tape:
-                enc_output = self.encoder(batch_input)
+                enc_output = self.encoder(batch_input, training=True)
 
                 for t in range(0, seq_len):
                     # using teacher forcing
                     dec_input = tf.expand_dims(batch_target[:, t], 1)
                     
                     predictions, hidden, _, ot_last = self.decoder(dec_input, enc_output, 
-                                                              hidden, ot_last)
+                                                              hidden, ot_last,
+                                                              training=True)
                     batch_predictions.append(tf.argmax(tf.squeeze(predictions), 
                                                         axis=-1)
                     )
