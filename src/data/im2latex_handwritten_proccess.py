@@ -16,8 +16,6 @@ from utils.latexlang import LatexTokenizer, Vocabulary
 
 from PIL import Image
 
-
-
 def untar_imgs(tarfile_path, extract_path):
     tar = tarfile.open(tarfile_path)
     tar.extractall(extract_path)
@@ -27,9 +25,9 @@ def process_images(raw_path, proc_path):
         img = np.array(Image.open(proc_path+'formula_images/'+img_path))
         return np.sum(img[img < 200]) > 0
 
-    train_file = raw_path + 'im2latex_train.lst'
-    validate_file = raw_path + 'im2latex_validate.lst'
-    test_file = raw_path + 'im2latex_test.lst'
+    train_file = raw_path + 'train.lst'
+    validate_file = raw_path + 'val.lst'
+    test_file = raw_path + 'test.lst'
 
     train_df = pd.read_csv(train_file, sep=" ", 
             header=None, names=['ID', 'Image', 'mode'])
@@ -37,6 +35,10 @@ def process_images(raw_path, proc_path):
             header=None, names=['ID', 'Image', 'mode'])
     val_df = pd.read_csv(validate_file, sep=" ", 
             header=None, names=['ID', 'Image', 'mode'])
+
+    train_df = train_df.astype({"Image": str})
+    test_df = test_df.astype({"Image": str})
+    val_df = val_df.astype({"Image": str})
 
     train_df.Image += '.png'
     test_df.Image += '.png'
@@ -86,11 +88,11 @@ def process_formulas(rawdir, procdir):
     """ Simply copy the files to the new dir (for the moment) and 
     returns a list with all the formulas merged.
     """
-    shutil.copy(rawdir+'im2latex_formulas.lst', 
-                procdir+'im2latex_formulas.lst')
+    shutil.copy(rawdir+'formulas.lst', 
+                procdir+'formulas.lst')
 
     merged_formulas = []
-    with open(procdir+'im2latex_formulas.lst', 
+    with open(procdir+'formulas.lst', 
               encoding="ISO-8859-1", newline="\n") as file:
         merged_formulas = file.readlines()
 
@@ -99,7 +101,7 @@ def process_formulas(rawdir, procdir):
     return merged_formulas
 
 def main():
-    parser = argparse.ArgumentParser(description='Process im2latex dataset')
+    parser = argparse.ArgumentParser(description='Process handwritten im2latex dataset')
 
     parser.add_argument('--rawdir',
                         type=str,
@@ -121,8 +123,8 @@ def main():
         raise ValueError("The save directory does not exist")
 
     print('Cleaning starting. This might take a while...')
-    print("Uncompressing formula images...")
-    untar_imgs(args.rawdir + 'formula_images.tar.gz', args.procdir)
+    print("Moving formula images...")
+    shutil.copytree(args.rawdir+'images/', args.procdir+'formula_images/')
     print("Processing formulas.")
     formulas = process_formulas(args.rawdir, args.procdir)
     print("Dealing with wrong images.")

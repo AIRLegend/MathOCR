@@ -11,7 +11,11 @@ def _parse_dataset(filename, target):
 
     return image, target
 
-def build_im2latex(path_formulas, path_images, path_csvs, vocabulary, batch_size=16):
+def build_im2latex(path_formulas, path_images, path_csvs, 
+                   vocabulary, batch_size=16,
+                   train_csv_name='train.csv',
+                   test_csv_name='test.csv',
+                   validate_csv_name='val.csv'):
 
     if not path_images.endswith('/'):
         path_images += '/'
@@ -33,9 +37,9 @@ def build_im2latex(path_formulas, path_images, path_csvs, vocabulary, batch_size
                           truncating='post',
                           value=vocabulary['PAD'])
 
-    train_df = pd.read_csv(path_csvs + 'im2latex_train.csv')
-    test_df = pd.read_csv(path_csvs + 'im2latex_test.csv')
-    val_df = pd.read_csv(path_csvs + 'im2latex_validate.csv')
+    train_df = pd.read_csv(path_csvs + train_csv_name)
+    test_df = pd.read_csv(path_csvs + test_csv_name)
+    val_df = pd.read_csv(path_csvs + validate_csv_name)
 
     train_df.Image = path_images + train_df.Image
     test_df.Image = path_images + test_df.Image

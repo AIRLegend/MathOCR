@@ -160,9 +160,9 @@ class Im2SeqTrainer():
                             tf.summary.scalar('accuracy', batch_acc, step=step)
 
                 # saving (checkpoint) the model every 2 epochs
-                if (epoch + 1) % 2 == 0:
-                    print('Saving checkpoint')
-                    self.ckpt_manager.save()    
+                #if (epoch + 1) % 2 == 0:
+                print('Saving checkpoint')
+                self.ckpt_manager.save()    
                 
 
                 print('Epoch {} Loss {:.4f} - Acc {:.4f}'.format(epoch + 1, 

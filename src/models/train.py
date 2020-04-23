@@ -41,6 +41,7 @@ def main():
 
     args = parser.parse_args()
 
+    restore_checkpoint = False
     if args.restore is True:
         restore_checkpoint = True
 
@@ -53,10 +54,9 @@ def main():
     if not savedir.endswith("/"):
         savedir += '/'
 
-    restore_checkpoint = False
     vocabulary_path = processed_data + 'vocabulary.txt'
     images_path = processed_data + 'formula_images/'
-    formulas_path = processed_data + 'im2latex_formulas.lst'
+    formulas_path = processed_data + 'formulas.lst'
     csvs_path = processed_data
     checkpoint_savedir = savedir + 'checkpoints/'
     logdir = savedir + 'logs/'
