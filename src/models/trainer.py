@@ -49,7 +49,7 @@ class Im2SeqTrainer():
                                                            checkpoint_path, 
                                                            max_to_keep=2)
             if restore_checkpoint:
-                self.ckpt_manager.restore(self.ckpt_manager.latest_checkpoint)
+                ckpt.restore(self.ckpt_manager.latest_checkpoint)
         
         @tf.function
         def loss_function(self, real, pred):
